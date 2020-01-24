@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq; // allows us to use arrays
+using UnityEngine.SceneManagement;
 
 public class AskPlayer : MonoBehaviour
 {
@@ -11,6 +12,10 @@ public class AskPlayer : MonoBehaviour
     private static List<Quandaries> unansweredQuestions; //create a list to hold unanswered questions and make it persist
     private Quandaries currentQuestion; // var to hold current question
     public GameObject restart_btn;
+    public Text instructions;
+    private string myPlayer;
+    public int justiceScore = 0;  // keep track of both kinds of scores
+    public int empathyScore = 0;
 
     [SerializeField]  //
     private Text quandaryText; // way to convert list item to text string
@@ -25,8 +30,7 @@ public class AskPlayer : MonoBehaviour
     private Text empScore; // way to convert list item to text string
 
 
-    public int justiceScore = 0;  // keep track of both kinds of scores
-    public int empathyScore = 0;
+
 
     [SerializeField]
     private Image screenImage;
@@ -39,8 +43,8 @@ public class AskPlayer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-
+        myPlayer = PlayerPrefs.GetString("PlayerName");
+        instructions.text = myPlayer + "  Let's see what you are made of!";
         BeginGame(); // call function that loads text
 
     }
@@ -53,8 +57,7 @@ public class AskPlayer : MonoBehaviour
             unansweredQuestions = quandaries.ToList<Quandaries>(); // fill list with questions from array
             print(unansweredQuestions);
         }
-        justiceScore = 0;
-        empathyScore = 0;
+
         restart_btn.SetActive(false); //turn button off till needed
 
         SetCurrentQuestion();  // call the function that selects a random question.
@@ -131,7 +134,7 @@ public class AskPlayer : MonoBehaviour
         else if (justiceScore < empathyScore)
         {
 
-            quandaryText.text = " Self sacrifce, but at what cost?";
+            quandaryText.text = " Self sacrifice, but at what cost?";
             screenImage.sprite = teresa;
 
         } else if (justiceScore == empathyScore){
@@ -140,8 +143,14 @@ public class AskPlayer : MonoBehaviour
         }
 
         restart_btn.SetActive(true);
+        unansweredQuestions = null;
+
     }
 
+    public void RestartGame()
+    {
 
+        SceneManager.LoadScene(0);
+    }
 
 }
